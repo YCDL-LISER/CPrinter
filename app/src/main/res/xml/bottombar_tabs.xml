@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        icon="@drawable/tabbar_home_auto"
+        id="@+id/tab_home"
+        title="首页" />
+    <tab
+        icon="@drawable/tabbar_print_auto"
+        id="@+id/tab_bill"
+        title="票据" />
+    <tab
+        icon="@drawable/tabbar_print_auto"
+        id="@+id/tab_install"
+        title="设置" />
+    <tab
+        icon="@drawable/tabbar_me_auto"
+        id="@+id/tab_me"
+        title="我的" />
+</tabs>

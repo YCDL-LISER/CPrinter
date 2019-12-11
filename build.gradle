@@ -1,0 +1,25 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.3'
+        /* Realm数据库支持 */
+        classpath "io.realm:realm-gradle-plugin:5.11.0"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        //添加jitpack仓库地址
+        maven { url "https://jitpack.io" }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
