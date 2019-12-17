@@ -10,6 +10,7 @@ import net.lingin.max.android.R;
 import net.lingin.max.android.logger.Log;
 import net.lingin.max.android.ui.adapter.ContentContainerFragmentPagerAdapter;
 import net.lingin.max.android.ui.base.BaseActivity;
+import net.lingin.max.android.ui.base.config.SystemUIVisibility;
 import net.lingin.max.android.ui.fragment.BillFragment;
 import net.lingin.max.android.ui.fragment.HomeFragment;
 import net.lingin.max.android.ui.fragment.InstallFragment;
@@ -34,6 +35,20 @@ public class MainActivity extends BaseActivity {
     @Override
     protected int onLayout() {
         return R.layout.activity_main;
+    }
+
+    @Override
+    protected void onSystemUIVisibility(SystemUIVisibility config) {
+        /* 默认高亮状态栏图标 */
+        config.setDarkStatusBar(false);
+        /* 默认显示状态栏 */
+        config.setHideStatusBar(false);
+        /* 默认隐藏导航栏 */
+        config.setHideNavigationBar(false);
+        /* 默认透明状态栏 */
+        config.setTranslucentStatusBar(false);
+        /* 默认透明导航栏 */
+        config.setTranslucentNavigationBar(false);
     }
 
     @Override
