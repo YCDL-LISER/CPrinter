@@ -54,5 +54,6 @@
         <activity
             android:name=".ui.activity.BluetoothListActivity"
             android:theme="@style/AppTheme" />
+        <activity android:name=".ui.activity.BluetoothConnectActivity" />
     </application>
 </manifest>

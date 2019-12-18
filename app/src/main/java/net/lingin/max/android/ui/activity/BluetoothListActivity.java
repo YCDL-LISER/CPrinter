@@ -171,7 +171,7 @@ public class BluetoothListActivity extends BaseActivity {
      * 初始化array adapters。一个用于已配对的设备，另一个用于新发现的设备
      */
     protected void initArrayAdapter() {
-        devicesArrayAdapter = new ArrayAdapter<>(this, R.layout.bluetooth_device_name_item);
+        devicesArrayAdapter = new ArrayAdapter<>(this, R.layout.bluetooth_list_item);
         lvPairedDevice.setAdapter(devicesArrayAdapter);
         lvPairedDevice.setOnItemClickListener(mDeviceClickListener);
         Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();

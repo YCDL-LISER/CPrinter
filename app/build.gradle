@@ -5,7 +5,7 @@ apply plugin: 'realm-android'
 android {
     compileSdkVersion 28
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0.0"
@@ -144,4 +144,8 @@ dependencies {
     // 底部导航栏
     implementation 'com.roughike:bottom-bar:2.3.1'
 //    implementation 'com.github.chaychan:BottomBarLayout:1.2.0'
+
+    implementation 'com.qmuiteam:qmui:2.0.0-alpha02'
+
+    compile files('libs/gprintersdkv1.jar')
 }

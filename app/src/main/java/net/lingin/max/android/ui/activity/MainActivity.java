@@ -38,20 +38,6 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected void onSystemUIVisibility(SystemUIVisibility config) {
-        /* 默认高亮状态栏图标 */
-        config.setDarkStatusBar(false);
-        /* 默认显示状态栏 */
-        config.setHideStatusBar(false);
-        /* 默认隐藏导航栏 */
-        config.setHideNavigationBar(false);
-        /* 默认透明状态栏 */
-        config.setTranslucentStatusBar(false);
-        /* 默认透明导航栏 */
-        config.setTranslucentNavigationBar(false);
-    }
-
-    @Override
     protected void onObject() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         contentContainer.setAdapter(new ContentContainerFragmentPagerAdapter(fragmentManager, fragments));

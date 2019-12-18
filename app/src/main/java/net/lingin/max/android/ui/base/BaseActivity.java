@@ -224,12 +224,12 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         config.setDarkStatusBar(false);
         /* 默认显示状态栏 */
         config.setHideStatusBar(false);
-        /* 默认隐藏导航栏 */
-        config.setHideNavigationBar(true);
-        /* 默认透明状态栏 */
-        config.setTranslucentStatusBar(true);
-        /* 默认透明导航栏 */
-        config.setTranslucentNavigationBar(true);
+        /* 默认显示导航栏 */
+        config.setHideNavigationBar(false);
+        /* 默认不透明状态栏 */
+        config.setTranslucentStatusBar(false);
+        /* 默认不透明导航栏 */
+        config.setTranslucentNavigationBar(false);
     }
 
     /**
