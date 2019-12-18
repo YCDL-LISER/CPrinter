@@ -11,6 +11,7 @@ import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
 
 import net.lingin.max.android.R;
 import net.lingin.max.android.ui.activity.BluetoothConnectActivity;
+import net.lingin.max.android.ui.activity.ConnectionStateActivity;
 import net.lingin.max.android.ui.base.BaseFragment;
 
 import butterknife.BindView;
@@ -37,7 +38,7 @@ public class InstallFragment extends BaseFragment {
         View.OnClickListener connectionStateClickListener = view -> {
             // 连接状态
 //            connectionState.setDetailText("Print4");
-            Intent intent = new Intent(getContext(), BluetoothConnectActivity.class);
+            Intent intent = new Intent(getContext(), ConnectionStateActivity.class);
             startActivity(intent);
         };
 

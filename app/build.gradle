@@ -147,5 +147,7 @@ dependencies {
 
     implementation 'com.qmuiteam:qmui:2.0.0-alpha02'
 
-    compile files('libs/gprintersdkv1.jar')
+    implementation files('libs/gprintersdkv1.jar')
+
+    implementation 'com.inuker.bluetooth:library:1.4.0'
 }

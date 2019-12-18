@@ -1,11 +1,11 @@
 package net.lingin.max.android.ui.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
-import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,14 +15,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.inuker.bluetooth.library.BluetoothClient;
+import com.inuker.bluetooth.library.search.SearchRequest;
+import com.inuker.bluetooth.library.search.SearchResult;
+import com.inuker.bluetooth.library.search.response.SearchResponse;
+import com.inuker.bluetooth.library.utils.BluetoothLog;
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
 
 import net.lingin.max.android.R;
+import net.lingin.max.android.service.BluetoothClientFactory;
 import net.lingin.max.android.ui.base.BaseActivity;
 import net.lingin.max.android.utils.ToastUtils;
 
-import java.util.List;
 import java.util.Set;
 
 import butterknife.BindView;
@@ -38,6 +43,8 @@ public class BluetoothConnectActivity extends BaseActivity {
 
     public static final int REQUEST_CONNECT_DEVICE = 3;
 
+    private BluetoothClient mClient;
+
     @BindView(R.id.blueToothGroupListView)
     QMUIGroupListView blueToothGroupListView;
 
@@ -50,56 +57,6 @@ public class BluetoothConnectActivity extends BaseActivity {
 
     private BluetoothAdapter mBluetoothAdapter;
 
-    /**
-     * 广播接收器
-     */
-    private BroadcastReceiver mFindBlueToothReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                // 当发现发现设备时
-                // 从intent中获取蓝牙设备对象
-                BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                // 如果已经配对了，跳过它，因为它已经被列出了
-                if (bluetoothDevice.getBondState() != BluetoothDevice.BOND_BONDED) {
-                    addSection(searchedSection, bluetoothDevice, searchedClickListener);
-                    addListItem(searchedSection);
-                }
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                Log.i(TAG, "蓝牙设备搜索结束");
-                bluetoothScan.setText("扫描");
-            }
-        }
-    };
-
-    private void addListItem(QMUIGroupListView.Section section) {
-        section.removeFrom(blueToothGroupListView);
-        section.addTo(blueToothGroupListView);
-    }
-
-    private View.OnClickListener searchedClickListener = view -> {
-        // 连接状态
-        if (view instanceof QMUICommonListItemView) {
-            QMUICommonListItemView qmuiView = (QMUICommonListItemView) view;
-            CharSequence address = qmuiView.getDetailText();
-            Log.i(TAG, "选择蓝牙：" + address);
-
-            BluetoothDevice searchedBluetoothDevice = mBluetoothAdapter.getRemoteDevice(address.toString());
-            searchedBluetoothDevice.connectGatt(this, true, new BluetoothGattCallback() {
-                @Override
-                public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-                    Log.i(TAG, "" + status + " " + newState);
-                }
-            });
-
-            Intent intent = new Intent();
-            intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
-            setResult(Activity.RESULT_OK, intent);
-            finish();
-        }
-    };
-
     @Override
     protected int onLayout() {
         return R.layout.activity_bluetooth_connect;
@@ -107,6 +64,13 @@ public class BluetoothConnectActivity extends BaseActivity {
 
     @Override
     protected void onObject() {
+        requestSelfPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, (authorize, permissions) -> {
+            Log.i(TAG, permissions.toString());
+        });
+
+        mClient = BluetoothClientFactory.getBluetoothClient(this);
+        scanBluetoothDevices();
+
         // 发现设备时注册广播
         IntentFilter findingFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         this.registerReceiver(mFindBlueToothReceiver, findingFilter);
@@ -239,4 +203,83 @@ public class BluetoothConnectActivity extends BaseActivity {
         // 从蓝牙适配器请求发现
         mBluetoothAdapter.startDiscovery();
     }
+
+    private void scanBluetoothDevices() {
+        SearchRequest request = new SearchRequest.Builder()
+                .searchBluetoothLeDevice(3000, 3)   // 先扫BLE设备3次，每次3s
+                .searchBluetoothClassicDevice(5000) // 再扫经典蓝牙5s
+                .searchBluetoothLeDevice(2000)      // 再扫BLE设备2s
+                .build();
+        mClient.search(request, new SearchResponse() {
+            @Override
+            public void onSearchStarted() {
+
+            }
+
+            @Override
+            public void onDeviceFounded(SearchResult device) {
+                BluetoothLog.v(String.format("beacon for %s\n%s", device.getAddress(), device.getAddress()));
+            }
+
+            @Override
+            public void onSearchStopped() {
+
+            }
+
+            @Override
+            public void onSearchCanceled() {
+
+            }
+        });
+    }
+
+    /**
+     * 广播接收器
+     */
+    private BroadcastReceiver mFindBlueToothReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // 当发现发现设备时
+                // 从intent中获取蓝牙设备对象
+                BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                // 如果已经配对了，跳过它，因为它已经被列出了
+                if (bluetoothDevice.getBondState() != BluetoothDevice.BOND_BONDED) {
+                    addSection(searchedSection, bluetoothDevice, searchedClickListener);
+                    addListItem(searchedSection);
+                }
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                Log.i(TAG, "蓝牙设备搜索结束");
+                bluetoothScan.setText("扫描");
+            }
+        }
+    };
+
+    private void addListItem(QMUIGroupListView.Section section) {
+        section.removeFrom(blueToothGroupListView);
+        section.addTo(blueToothGroupListView);
+    }
+
+    private View.OnClickListener searchedClickListener = view -> {
+        // 连接状态
+        if (view instanceof QMUICommonListItemView) {
+            QMUICommonListItemView qmuiView = (QMUICommonListItemView) view;
+            CharSequence address = qmuiView.getDetailText();
+            Log.i(TAG, "选择蓝牙：" + address);
+
+            BluetoothDevice searchedBluetoothDevice = mBluetoothAdapter.getRemoteDevice(address.toString());
+            searchedBluetoothDevice.connectGatt(this, true, new BluetoothGattCallback() {
+                @Override
+                public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+                    Log.i(TAG, "" + status + " " + newState);
+                }
+            });
+
+            Intent intent = new Intent();
+            intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
+            setResult(Activity.RESULT_OK, intent);
+            finish();
+        }
+    };
 }

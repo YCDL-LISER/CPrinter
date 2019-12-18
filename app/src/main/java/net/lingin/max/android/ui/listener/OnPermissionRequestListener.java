@@ -9,6 +9,7 @@ import java.util.List;
  * Created time: 2019/5/19.
  * Description: 权限请求回调
  */
+@FunctionalInterface
 public interface OnPermissionRequestListener {
 
     /**
