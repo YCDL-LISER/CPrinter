@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
+import com.qmuiteam.qmui.widget.QMUITopBarLayout;
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
 
@@ -18,6 +20,9 @@ import butterknife.BindView;
 
 public class InstallFragment extends BaseFragment {
 
+    @BindView(R.id.topbar)
+    QMUITopBarLayout mTopBar;
+
     @BindView(R.id.groupListView)
     QMUIGroupListView mGroupListView;
 
@@ -28,6 +33,7 @@ public class InstallFragment extends BaseFragment {
 
     @Override
     protected void onObject() {
+        initTopBar();
 
     }
 
@@ -60,4 +66,16 @@ public class InstallFragment extends BaseFragment {
             String macAddress = data.getStringExtra(BluetoothConnectActivity.EXTRA_DEVICE_ADDRESS);
         }
     }
+
+    private void initTopBar() {
+        mTopBar.setTitle("设置");
+
+        mTopBar.addRightImageButton(R.mipmap.icon_topbar_about, R.id.topbar_right_about_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+    }
+
 }

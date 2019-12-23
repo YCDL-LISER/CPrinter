@@ -2,6 +2,9 @@ apply plugin: 'com.android.application'
 /* Realm数据库支持 */
 apply plugin: 'realm-android'
 
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -145,7 +148,11 @@ dependencies {
     implementation 'com.roughike:bottom-bar:2.3.1'
 //    implementation 'com.github.chaychan:BottomBarLayout:1.2.0'
 
-    implementation 'com.qmuiteam:qmui:2.0.0-alpha02'
+    /* qmui */
+    def qmui_arch_version = '2.0.0-alpha02'
+    implementation "com.qmuiteam:qmui:$qmui_arch_version"
+    implementation "com.qmuiteam:arch:$qmui_arch_version"
+    kapt "com.qmuiteam:arch-compiler:$qmui_arch_version"
 
     implementation files('libs/gprintersdkv1.jar')
 
