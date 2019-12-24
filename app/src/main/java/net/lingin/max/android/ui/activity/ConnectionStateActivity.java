@@ -1,3 +1,4 @@
+/*
 package net.lingin.max.android.ui.activity;
 
 import android.Manifest;
@@ -11,21 +12,18 @@ import android.widget.Button;
 
 import com.inuker.bluetooth.library.BluetoothClient;
 import com.inuker.bluetooth.library.Constants;
-import com.inuker.bluetooth.library.connect.listener.BleConnectStatusListener;
 import com.inuker.bluetooth.library.connect.listener.BluetoothStateListener;
-import com.inuker.bluetooth.library.connect.options.BleConnectOptions;
-import com.inuker.bluetooth.library.connect.response.BleConnectResponse;
 import com.inuker.bluetooth.library.receiver.listener.BluetoothBondListener;
 import com.inuker.bluetooth.library.search.SearchRequest;
 import com.inuker.bluetooth.library.search.SearchResult;
 import com.inuker.bluetooth.library.search.response.SearchResponse;
-import com.inuker.bluetooth.library.utils.BluetoothUtils;
+import com.qmuiteam.qmui.widget.QMUITopBarLayout;
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
 
 import net.lingin.max.android.R;
-import net.lingin.max.android.net.io.ClassicBluetoothSocket;
 import net.lingin.max.android.service.BluetoothClientFactory;
+import net.lingin.max.android.service.ClassicBluetoothClient;
 import net.lingin.max.android.ui.base.BaseActivity;
 import net.lingin.max.android.ui.listener.BTConnectStatusListener;
 import net.lingin.max.android.utils.ToastUtils;
@@ -40,11 +38,10 @@ public class ConnectionStateActivity extends BaseActivity {
 
     private static final String TAG = ConnectionStateActivity.class.getName();
 
-    public static final String EXTRA_DEVICE_ADDRESS = "address";
-
     public static final int REQUEST_ENABLE_BT = 2;
 
-    private BluetoothClient mClient;
+    @BindView(R.id.topbar)
+    QMUITopBarLayout mTopBar;
 
     @BindView(R.id.blueToothGroupListView)
     QMUIGroupListView blueToothGroupListView;
@@ -62,17 +59,15 @@ public class ConnectionStateActivity extends BaseActivity {
 
     private Set<String> removeDuplication = new HashSet<>(16);
 
-    private ClassicBluetoothSocket classicBluetoothSocket;
+    private BluetoothClient bluetoothClient;
+
+    private ClassicBluetoothClient classicBluetoothClient;
 
     private BluetoothStateListener bluetoothStateListener;
 
     private BluetoothBondListener bluetoothBondListener;
 
     private BTConnectStatusListener btConnectStatusListener;
-
-    private BleConnectOptions bleConnectOptions;
-
-    private BleConnectResponse bleConnectResponse;
 
     private View.OnClickListener pairedClickListener;
 
@@ -90,15 +85,14 @@ public class ConnectionStateActivity extends BaseActivity {
             Log.i(TAG, permissions.toString());
         });
 
-        mClient = BluetoothClientFactory.getBluetoothClient(this);
+        bluetoothClient = BluetoothClientFactory.getBluetoothClient(this);
 
         // 初始化Section对象
         initSection();
 
         searchRequest = new SearchRequest.Builder()
-                .searchBluetoothLeDevice(3000, 3)   // 先扫BLE设备3次，每次3s
-                .searchBluetoothClassicDevice(3000, 3) // 再扫经典蓝牙5s
-//                .searchBluetoothLeDevice(2000)      // 再扫BLE设备2s
+                .searchBluetoothClassicDevice(3000, 3) // 先扫经典蓝牙设备3次，每次3s
+                .searchBluetoothClassicDevice(2000) // 再扫BLE设备2s
                 .build();
 
         searchResponse = new SearchResponse() {
@@ -141,18 +135,7 @@ public class ConnectionStateActivity extends BaseActivity {
             }
         };
 
-        initBleConnectResponse();
-
         initBleConnectStatusListener();
-
-        bleConnectOptions = new BleConnectOptions.Builder()
-                .setConnectRetry(3)   // 连接如果失败重试3次
-                .setConnectTimeout(30000)   // 连接超时30s
-                .setServiceDiscoverRetry(3)  // 发现服务如果失败重试3次
-                .setServiceDiscoverTimeout(20000)  // 发现服务超时20s
-                .build();
-
-        initBleConnectResponse();
 
         initPairedClickListener();
 
@@ -161,17 +144,15 @@ public class ConnectionStateActivity extends BaseActivity {
 
     @Override
     protected void onView() {
-
+        initTopBar();
     }
 
     @Override
     protected void onData() {
         // 检查蓝牙
         checkBluetooth();
-
         // 注册蓝牙监听器
         registerBluetoothMonitor();
-
         // 搜索蓝牙设备
         searchBluetoothDevices();
     }
@@ -179,9 +160,8 @@ public class ConnectionStateActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mClient.unregisterBluetoothStateListener(bluetoothStateListener);
-        mClient.unregisterBluetoothBondListener(bluetoothBondListener);
-        classicBluetoothSocket.closePort();
+        bluetoothClient.unregisterBluetoothStateListener(bluetoothStateListener);
+        bluetoothClient.unregisterBluetoothBondListener(bluetoothBondListener);
     }
 
     @Override
@@ -197,11 +177,13 @@ public class ConnectionStateActivity extends BaseActivity {
         }
     }
 
-    /**
+    */
+/**
      * 扫描
      *
      * @param v 视图
-     */
+     *//*
+
     @OnClick(R.id.bluetoothScan)
     public void onScanClick(View v) {
         CharSequence scanText = bluetoothScan.getText();
@@ -214,18 +196,18 @@ public class ConnectionStateActivity extends BaseActivity {
     }
 
     private void checkBluetooth() {
-        if (!mClient.isBleSupported()) {
+        if (!bluetoothClient.isBleSupported()) {
             ToastUtils.show("设备不支持蓝牙");
         } else {
-            if (!mClient.isBluetoothOpened()) {
-                mClient.openBluetooth();
+            if (!bluetoothClient.isBluetoothOpened()) {
+                bluetoothClient.openBluetooth();
             }
         }
     }
 
     private void registerBluetoothMonitor() {
-        mClient.registerBluetoothStateListener(bluetoothStateListener);
-        mClient.registerBluetoothBondListener(bluetoothBondListener);
+        bluetoothClient.registerBluetoothStateListener(bluetoothStateListener);
+        bluetoothClient.registerBluetoothBondListener(bluetoothBondListener);
     }
 
     private void initSection() {
@@ -236,11 +218,19 @@ public class ConnectionStateActivity extends BaseActivity {
     }
 
     private void searchBluetoothDevices() {
-        mClient.search(searchRequest, searchResponse);
+        bluetoothClient.search(searchRequest, searchResponse);
     }
 
     private void stopSearchBluetoothDevices() {
-        mClient.stopSearch();
+        bluetoothClient.stopSearch();
+    }
+
+    private void initTopBar() {
+        mTopBar.addLeftBackImageButton().setOnClickListener(view -> {
+            finish();
+            overridePendingTransition(R.anim.slide_still, R.anim.slide_out_right);
+        });
+        mTopBar.setTitle("连接设备");
     }
 
     private void addListItemView(QMUIGroupListView.Section section, BluetoothDevice bluetoothDevice, View.OnClickListener onClickListener) {
@@ -262,7 +252,6 @@ public class ConnectionStateActivity extends BaseActivity {
             if (view instanceof QMUICommonListItemView) {
                 QMUICommonListItemView qmuiView = (QMUICommonListItemView) view;
                 CharSequence address = qmuiView.getDetailText();
-                Log.i(TAG, "选择已连接蓝牙：" + address);
             }
         };
     }
@@ -273,60 +262,31 @@ public class ConnectionStateActivity extends BaseActivity {
             if (view instanceof QMUICommonListItemView) {
                 QMUICommonListItemView qmuiView = (QMUICommonListItemView) view;
                 CharSequence address = qmuiView.getDetailText();
-                Log.i(TAG, "选择未连接蓝牙：" + address);
 
                 // 蓝牙连接
                 checkBluetoothState(address.toString());
                 connectBluetooth(address.toString(), btConnectStatusListener);
 
-                /*Intent intent = new Intent();
+                */
+/*Intent intent = new Intent();
                 intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
                 setResult(Activity.RESULT_OK, intent);
-                finish();*/
+                finish();*//*
+
             }
         };
     }
 
     private void checkBluetoothState(String mac) {
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            Log.i(TAG, "本机不支持低功耗蓝牙");
-        }
-        int bondState = mClient.getBondState(mac);
+        int bondState = bluetoothClient.getBondState(mac);
         Log.i(TAG, "绑定状态：" + bondState);
-        int connectStatus = mClient.getConnectStatus(mac);
+        int connectStatus = bluetoothClient.getConnectStatus(mac);
         Log.i(TAG, "连接状态：" + connectStatus);
     }
 
     private void connectBluetooth(String mac, BTConnectStatusListener btConnectStatusListener) {
-        /*if (classicBluetoothSocket != null) {
-            if (!classicBluetoothSocket.isConnected()) {
-                Log.i(TAG, "蓝牙正在连接...无需重新连接：");
-                return;
-            }
-        }*/
-
-        classicBluetoothSocket = new ClassicBluetoothSocket(BluetoothUtils.getRemoteDevice(mac), btConnectStatusListener);
-        classicBluetoothSocket.openPort();
-
-    }
-
-    private void initBleConnectResponse() {
-        bleConnectResponse = (code, data) -> {
-            if (data == null) {
-                Log.i(TAG, "蓝牙连接状态：" + code + " ");
-                return;
-            }
-            if (Constants.REQUEST_SUCCESS == code) {
-                Log.i(TAG, "蓝牙连接响应：" + code + " " + data.toString());
-
-                /*data.getServices()
-                        .stream()
-                        .flatMap(bleGattService -> {
-                            bleGattService.getCharacters()
-                                    .stream())
-                        });*/
-            }
-        };
+        classicBluetoothClient = BluetoothClientFactory.getClassicBluetoothClient(mac, btConnectStatusListener);
+        classicBluetoothClient.connect();
     }
 
     private void initBleConnectStatusListener() {
@@ -338,6 +298,7 @@ public class ConnectionStateActivity extends BaseActivity {
                     case Constants.STATUS_DEVICE_CONNECTED:
                         addListItemView(pairedSection, bluetoothDevice, pairedClickListener);
                         addToListView(pairedSection);
+                        ToastUtils.show("蓝牙连接成功");
                         break;
                     default:
                         break;
@@ -346,3 +307,4 @@ public class ConnectionStateActivity extends BaseActivity {
         };
     }
 }
+*/

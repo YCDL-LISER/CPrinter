@@ -39,9 +39,7 @@ public abstract class BaseFragment extends RxFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(onLayout(), container, false);
         unbinder = ButterKnife.bind(this, view);
-        onObject();
         onView();
-        onData();
         return view;
     }
 
@@ -97,7 +95,7 @@ public abstract class BaseFragment extends RxFragment {
     /**
      * 初始化对象
      */
-    protected abstract void onObject();
+//    protected abstract void onObject();
 
     /**
      * 初始化视图
@@ -107,8 +105,7 @@ public abstract class BaseFragment extends RxFragment {
     /**
      * 初始化数据
      */
-    protected abstract void onData();
-
+//    protected abstract void onData();
     @Override
     public void onDestroyView() {
         super.onDestroyView();

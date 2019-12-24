@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
@@ -13,7 +12,6 @@ import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
 
 import net.lingin.max.android.R;
 import net.lingin.max.android.ui.activity.BluetoothConnectActivity;
-import net.lingin.max.android.ui.activity.ConnectionStateActivity;
 import net.lingin.max.android.ui.base.BaseFragment;
 
 import butterknife.BindView;
@@ -32,19 +30,13 @@ public class InstallFragment extends BaseFragment {
     }
 
     @Override
-    protected void onObject() {
+    protected void onView() {
         initTopBar();
 
-    }
-
-    @Override
-    protected void onView() {
         QMUICommonListItemView connectionState = mGroupListView.createItemView("连接状态");
         connectionState.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
         View.OnClickListener connectionStateClickListener = view -> {
-            // 连接状态
-//            connectionState.setDetailText("Print4");
-            Intent intent = new Intent(getContext(), ConnectionStateActivity.class);
+            Intent intent = new Intent(getContext(), BluetoothConnectActivity.class);
             startActivity(intent);
         };
 
@@ -55,15 +47,10 @@ public class InstallFragment extends BaseFragment {
     }
 
     @Override
-    protected void onData() {
-
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            String macAddress = data.getStringExtra(BluetoothConnectActivity.EXTRA_DEVICE_ADDRESS);
+//            String macAddress = data.getStringExtra(BluetoothConnectActivity.EXTRA_DEVICE_ADDRESS);
         }
     }
 

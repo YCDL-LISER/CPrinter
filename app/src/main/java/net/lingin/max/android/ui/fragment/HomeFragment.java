@@ -11,17 +11,7 @@ public class HomeFragment extends BaseFragment {
     }
 
     @Override
-    protected void onObject() {
-
-    }
-
-    @Override
     protected void onView() {
-
-    }
-
-    @Override
-    protected void onData() {
 
     }
 }

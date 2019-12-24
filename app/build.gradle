@@ -2,9 +2,6 @@ apply plugin: 'com.android.application'
 /* Realm数据库支持 */
 apply plugin: 'realm-android'
 
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -96,6 +93,7 @@ android {
     lintOptions {
         abortOnError false
     }
+    buildToolsVersion = '28.0.3'
 }
 
 /* 获取系统当前时间 */
@@ -152,9 +150,13 @@ dependencies {
     def qmui_arch_version = '2.0.0-alpha02'
     implementation "com.qmuiteam:qmui:$qmui_arch_version"
     implementation "com.qmuiteam:arch:$qmui_arch_version"
-    kapt "com.qmuiteam:arch-compiler:$qmui_arch_version"
+    annotationProcessor "com.qmuiteam:arch-compiler:$qmui_arch_version"
 
     implementation files('libs/gprintersdkv1.jar')
 
     implementation 'com.inuker.bluetooth:library:1.4.0'
+
+    compile('com.alibaba.android:vlayout:1.2.8@aar') {
+        transitive = true
+    }
 }

@@ -11,17 +11,7 @@ public class BillFragment extends BaseFragment {
     }
 
     @Override
-    protected void onObject() {
-
-    }
-
-    @Override
     protected void onView() {
-
-    }
-
-    @Override
-    protected void onData() {
 
     }
 }

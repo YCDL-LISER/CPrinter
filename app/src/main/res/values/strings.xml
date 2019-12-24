@@ -187,4 +187,6 @@
     <string name="about_item_github">GitHub</string>
     <string name="about_copyright">© %1$s QMUI Team All rights reserved.</string>
 
+    <string name="section_header_connected">已连接设备</string>
+    <string name="section_header_searched">已搜索设备</string>
 </resources>

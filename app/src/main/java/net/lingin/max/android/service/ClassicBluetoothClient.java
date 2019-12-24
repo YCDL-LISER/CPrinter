@@ -1,4 +1,4 @@
-package net.lingin.max.android.net.io;
+package net.lingin.max.android.service;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -17,9 +17,9 @@ import java.util.Vector;
 /**
  * 经典蓝牙连接
  */
-public class ClassicBluetoothSocket {
+public class ClassicBluetoothClient {
 
-    private static final String TAG = ClassicBluetoothSocket.class.getName();
+    private static final String TAG = ClassicBluetoothClient.class.getName();
 
     public UUID SOCKET_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
@@ -35,7 +35,7 @@ public class ClassicBluetoothSocket {
 
     private OutputStream outputStream;
 
-    public ClassicBluetoothSocket(BluetoothDevice bluetoothDevice, BTConnectStatusListener btConnectStatusListener) {
+    public ClassicBluetoothClient(BluetoothDevice bluetoothDevice, BTConnectStatusListener btConnectStatusListener) {
         this.bluetoothDevice = bluetoothDevice;
         this.btConnectStatusListener = btConnectStatusListener;
     }
@@ -53,10 +53,10 @@ public class ClassicBluetoothSocket {
         return this.mSocket.isConnected();
     }
 
-    public void openPort() {
-        SOCKET_UUID = UUID.randomUUID();
+    public void connect() {
+//        SOCKET_UUID = UUID.randomUUID();
         try {
-            mSocket = bluetoothDevice.createRfcommSocketToServiceRecord(SOCKET_UUID);
+            mSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(SOCKET_UUID);
             mSocket.connect();
             initSocketStream();
             btConnectStatusListener.invokeSync(bluetoothDevice, Constants.STATUS_DEVICE_CONNECTED);
@@ -112,7 +112,7 @@ public class ClassicBluetoothSocket {
         }
     }
 
-    public boolean closePort() {
+    public boolean disconnect() {
         try {
             this.closeConn();
             return true;

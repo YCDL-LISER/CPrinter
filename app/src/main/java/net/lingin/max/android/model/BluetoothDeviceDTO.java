@@ -4,7 +4,7 @@ public class BluetoothDeviceDTO {
 
     private String name;
 
-    private String macAddr;
+    private String mac;
 
     public String getName() {
         return name;
@@ -14,11 +14,16 @@ public class BluetoothDeviceDTO {
         this.name = name;
     }
 
-    public String getMacAddr() {
-        return macAddr;
+    public String getMac() {
+        return mac;
     }
 
-    public void setMacAddr(String macAddr) {
-        this.macAddr = macAddr;
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
+
+    public BluetoothDeviceDTO(String name, String mac) {
+        this.name = name;
+        this.mac = mac;
     }
 }
