@@ -7,5 +7,5 @@
     <com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView
         android:id="@+id/qmui_common_list_item_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="@dimen/qmui_list_item_height" />
 </LinearLayout>

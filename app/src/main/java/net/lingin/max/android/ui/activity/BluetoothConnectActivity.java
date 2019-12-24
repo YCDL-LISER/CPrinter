@@ -80,7 +80,7 @@ public class BluetoothConnectActivity extends BaseActivity {
 
     private BTConnectStatusListener btConnectStatusListener;
 
-    private View.OnClickListener pairedClickListener;
+    private View.OnClickListener connectedClickListener;
 
     private View.OnClickListener searchedClickListener;
 
@@ -244,26 +244,33 @@ public class BluetoothConnectActivity extends BaseActivity {
         VirtualLayoutManager connectedManager = new VirtualLayoutManager(this);
         LayoutHelper connectedHelper = new LinearLayoutHelper();
         connectedRecyclerView.setLayoutManager(connectedManager);
-        BluetoothDeviceDTO connectedDTO = new BluetoothDeviceDTO("蓝牙未连接", "");
-        connectedItemAdapter = new BluetoothLinearItemAdapter(this, connectedHelper);
-        connectedRecyclerView.setAdapter(connectedItemAdapter);
-        connectedItemAdapter.addBluetooth(connectedDTO);
+        // 分割线
         connectedRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        connectedItemAdapter = new BluetoothLinearItemAdapter(this, connectedHelper);
+        BluetoothDeviceDTO connectedDTO = new BluetoothDeviceDTO("蓝牙未连接", "");
+        connectedItemAdapter.addBluetooth(connectedDTO);
+        connectedItemAdapter.addOnClickListener(connectedClickListener);
+        connectedRecyclerView.setAdapter(connectedItemAdapter);
 
         VirtualLayoutManager searchedManager = new VirtualLayoutManager(this);
         LayoutHelper searchedHelper = new LinearLayoutHelper();
         searchedRecyclerView.setLayoutManager(searchedManager);
-        searchedItemAdapter = new BluetoothLinearItemAdapter(this, searchedHelper);
-        searchedRecyclerView.setAdapter(searchedItemAdapter);
+        // 分割线
         searchedRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        searchedItemAdapter = new BluetoothLinearItemAdapter(this, searchedHelper);
+        // 设置点击监听
+        searchedItemAdapter.addOnClickListener(searchedClickListener);
+        searchedRecyclerView.setAdapter(searchedItemAdapter);
     }
 
     private void initPairedClickListener() {
-        pairedClickListener = view -> {
+        connectedClickListener = view -> {
             // 连接状态
             if (view instanceof QMUICommonListItemView) {
                 QMUICommonListItemView qmuiView = (QMUICommonListItemView) view;
                 CharSequence address = qmuiView.getDetailText();
+                // 断开连接
+                classicBluetoothClient.disconnect();
             }
         };
     }
@@ -302,6 +309,9 @@ public class BluetoothConnectActivity extends BaseActivity {
                 switch (status) {
                     case Constants.STATUS_DEVICE_CONNECTED:
                         ToastUtils.show("蓝牙连接成功");
+                        searchedItemAdapter.deleteBluetooth(bluetoothDevice.getAddress());
+                        connectedItemAdapter.initBluetoothes();
+                        connectedItemAdapter.addBluetooth(new BluetoothDeviceDTO(bluetoothDevice.getName(), bluetoothDevice.getAddress()));
                         break;
                     default:
                         break;

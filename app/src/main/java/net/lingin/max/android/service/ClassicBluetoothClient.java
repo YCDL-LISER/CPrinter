@@ -57,6 +57,9 @@ public class ClassicBluetoothClient {
 //        SOCKET_UUID = UUID.randomUUID();
         try {
             mSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(SOCKET_UUID);
+            if (mSocket.isConnected()) {
+                return;
+            }
             mSocket.connect();
             initSocketStream();
             btConnectStatusListener.invokeSync(bluetoothDevice, Constants.STATUS_DEVICE_CONNECTED);

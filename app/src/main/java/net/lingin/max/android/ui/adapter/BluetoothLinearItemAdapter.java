@@ -31,6 +31,8 @@ public class BluetoothLinearItemAdapter extends DelegateAdapter.Adapter<Recycler
 
     private List<BluetoothDeviceDTO> data = new ArrayList<>();
 
+    private View.OnClickListener onClickListener = null;
+
     public BluetoothLinearItemAdapter(Context context, LayoutHelper helper) {
         this.context = context;
         this.mHelper = helper;
@@ -53,7 +55,11 @@ public class BluetoothLinearItemAdapter extends DelegateAdapter.Adapter<Recycler
         recyclerViewHolder.qmuiCommonListItemView.setText(data.get(position).getName());
         recyclerViewHolder.qmuiCommonListItemView.setDetailText(data.get(position).getMac());
         recyclerViewHolder.qmuiCommonListItemView.setOrientation(QMUICommonListItemView.VERTICAL);
+        if (onClickListener != null) {
+            recyclerViewHolder.qmuiCommonListItemView.setOnClickListener(onClickListener);
+        }
     }
+
 
     @Override
     public int getItemCount() {
@@ -64,18 +70,32 @@ public class BluetoothLinearItemAdapter extends DelegateAdapter.Adapter<Recycler
     }
 
     public void addBluetooth(BluetoothDeviceDTO bluetoothDeviceDTO) {
-        this.data.add(bluetoothDeviceDTO);
+        data.add(bluetoothDeviceDTO);
         notifyDataSetChanged();
     }
 
-    public void deleteBluetooth(final int position) {
-        this.data.remove(position);
-        notifyDataSetChanged();
+    public void deleteBluetooth(String mac) {
+        int position = -1;
+        for (int i = 0; i < this.data.size(); i++) {
+            BluetoothDeviceDTO dto = data.get(i);
+            if (dto.getMac().equals(mac)) {
+                position = i;
+                break;
+            }
+        }
+        if (position >= 0) {
+            data.remove(position);
+            notifyDataSetChanged();
+        }
     }
 
     public void initBluetoothes() {
         this.data.clear();
         notifyDataSetChanged();
+    }
+
+    public void addOnClickListener(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     /**

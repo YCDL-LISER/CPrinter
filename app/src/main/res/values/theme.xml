@@ -37,6 +37,11 @@
 
 
     <style name="AppTheme" parent="QMUI.Compat.NoActionBar">
+        <item name="colorPrimary">?attr/qmui_config_color_blue</item>
+        <item name="colorPrimaryDark">?attr/qmui_config_color_blue</item>
+        <item name="colorAccent">?attr/qmui_config_color_blue</item>
+        <item name="colorControlNormal">@color/qmui_config_color_white</item>
+
         <!-- 配置Android提供的theme -->
         <item name="android:textAppearanceListItemSmall">@style/QDTextAppearanceListItemSmall</item>
         <item name="android:textAppearanceListItem">@style/QDtextAppearanceListItem</item>
