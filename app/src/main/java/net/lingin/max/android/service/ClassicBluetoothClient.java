@@ -64,8 +64,8 @@ public class ClassicBluetoothClient {
             initSocketStream();
             btConnectStatusListener.invokeSync(bluetoothDevice, Constants.STATUS_DEVICE_CONNECTED);
         } catch (IOException e) {
-            e.printStackTrace();
-            btConnectStatusListener.invokeSync(bluetoothDevice, Constants.STATUS_UNKNOWN);
+            Log.e(TAG, "连接异常: ", e);
+            btConnectStatusListener.invokeSync(bluetoothDevice, Constants.STATUS_DEVICE_DISCONNECTED);
         }
     }
 

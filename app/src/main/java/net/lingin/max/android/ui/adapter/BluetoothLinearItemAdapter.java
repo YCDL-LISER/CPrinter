@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.LayoutHelper;
+import com.qmuiteam.qmui.util.QMUIResHelper;
+import com.qmuiteam.qmui.widget.QMUILoadingView;
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 
 import net.lingin.max.android.R;
@@ -23,7 +25,7 @@ import java.util.List;
  * @author Administrator
  * @date 2019/12/24 15:35
  */
-public class BluetoothLinearItemAdapter extends DelegateAdapter.Adapter<RecyclerView.ViewHolder> {
+public class BluetoothLinearItemAdapter extends DelegateAdapter.Adapter<BluetoothLinearItemAdapter.RecyclerViewItemHolder> {
 
     private Context context;
 
@@ -31,7 +33,7 @@ public class BluetoothLinearItemAdapter extends DelegateAdapter.Adapter<Recycler
 
     private List<BluetoothDeviceDTO> data = new ArrayList<>();
 
-    private View.OnClickListener onClickListener = null;
+    private OnItemClickListener onItemClickListener = null;
 
     public BluetoothLinearItemAdapter(Context context, LayoutHelper helper) {
         this.context = context;
@@ -43,23 +45,22 @@ public class BluetoothLinearItemAdapter extends DelegateAdapter.Adapter<Recycler
         return mHelper;
     }
 
+    @NotNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public RecyclerViewItemHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.linear_item_bluetooth, parent, false);
         return new RecyclerViewItemHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NotNull RecyclerView.ViewHolder holder, final int position) {
-        RecyclerViewItemHolder recyclerViewHolder = (RecyclerViewItemHolder) holder;
-        recyclerViewHolder.qmuiCommonListItemView.setText(data.get(position).getName());
-        recyclerViewHolder.qmuiCommonListItemView.setDetailText(data.get(position).getMac());
-        recyclerViewHolder.qmuiCommonListItemView.setOrientation(QMUICommonListItemView.VERTICAL);
-        if (onClickListener != null) {
-            recyclerViewHolder.qmuiCommonListItemView.setOnClickListener(onClickListener);
+    public void onBindViewHolder(@NotNull RecyclerViewItemHolder holder, final int position) {
+        holder.qmuiCommonListItemView.setText(data.get(position).getName());
+        holder.qmuiCommonListItemView.setDetailText(data.get(position).getMac());
+        holder.qmuiCommonListItemView.setOrientation(QMUICommonListItemView.VERTICAL);
+        if (onItemClickListener != null) {
+            holder.qmuiCommonListItemView.setOnClickListener(view -> onItemClickListener.ItemClickListener(view, position));
         }
     }
-
 
     @Override
     public int getItemCount() {
@@ -71,6 +72,11 @@ public class BluetoothLinearItemAdapter extends DelegateAdapter.Adapter<Recycler
 
     public void addBluetooth(BluetoothDeviceDTO bluetoothDeviceDTO) {
         data.add(bluetoothDeviceDTO);
+        notifyDataSetChanged();
+    }
+
+    public void deleteBluetooth(int postion) {
+        data.remove(postion);
         notifyDataSetChanged();
     }
 
@@ -94,14 +100,14 @@ public class BluetoothLinearItemAdapter extends DelegateAdapter.Adapter<Recycler
         notifyDataSetChanged();
     }
 
-    public void addOnClickListener(View.OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
+    public void addOnClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     /**
      * 正常条目的item的ViewHolder
      */
-    private class RecyclerViewItemHolder extends RecyclerView.ViewHolder {
+    class RecyclerViewItemHolder extends RecyclerView.ViewHolder {
 
         public QMUICommonListItemView qmuiCommonListItemView;
 
@@ -109,5 +115,9 @@ public class BluetoothLinearItemAdapter extends DelegateAdapter.Adapter<Recycler
             super(itemView);
             qmuiCommonListItemView = itemView.findViewById(R.id.qmui_common_list_item_view);
         }
+    }
+
+    public interface OnItemClickListener {
+        void ItemClickListener(View view, int postion);
     }
 }

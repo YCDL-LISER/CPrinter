@@ -1,9 +1,14 @@
 package net.lingin.max.android.ui.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +26,7 @@ import com.inuker.bluetooth.library.receiver.listener.BluetoothBondListener;
 import com.inuker.bluetooth.library.search.SearchRequest;
 import com.inuker.bluetooth.library.search.SearchResult;
 import com.inuker.bluetooth.library.search.response.SearchResponse;
+import com.qmuiteam.qmui.widget.QMUILoadingView;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListSectionHeaderFooterView;
@@ -39,6 +45,9 @@ import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class BluetoothConnectActivity extends BaseActivity {
 
@@ -80,9 +89,9 @@ public class BluetoothConnectActivity extends BaseActivity {
 
     private BTConnectStatusListener btConnectStatusListener;
 
-    private View.OnClickListener connectedClickListener;
+    private BluetoothLinearItemAdapter.OnItemClickListener connectedClickListener;
 
-    private View.OnClickListener searchedClickListener;
+    private BluetoothLinearItemAdapter.OnItemClickListener searchedClickListener;
 
     @Override
     protected int onLayout() {
@@ -134,6 +143,8 @@ public class BluetoothConnectActivity extends BaseActivity {
         registerBluetoothMonitor();
         // 搜索蓝牙设备
         searchBluetoothDevices();
+
+        registerBoradcastReceiver();
     }
 
     @Override
@@ -141,6 +152,7 @@ public class BluetoothConnectActivity extends BaseActivity {
         super.onDestroy();
         bluetoothClient.unregisterBluetoothStateListener(bluetoothStateListener);
         bluetoothClient.unregisterBluetoothBondListener(bluetoothBondListener);
+        unRegisterBoradcastReceiver();
     }
 
     @Override
@@ -202,6 +214,7 @@ public class BluetoothConnectActivity extends BaseActivity {
                         }
                     }
 
+                    @SuppressLint("CheckResult")
                     @Override
                     public void onDeviceFounded(SearchResult searchResult) {
                         boolean isNotDuplication = removeDuplication.add(searchResult.getAddress());
@@ -240,6 +253,7 @@ public class BluetoothConnectActivity extends BaseActivity {
         searchedSectionHeaderFooter.setText("已搜索设备");
     }
 
+    @SuppressLint("CheckResult")
     private void initRecyclerView() {
         VirtualLayoutManager connectedManager = new VirtualLayoutManager(this);
         LayoutHelper connectedHelper = new LinearLayoutHelper();
@@ -247,8 +261,8 @@ public class BluetoothConnectActivity extends BaseActivity {
         // 分割线
         connectedRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         connectedItemAdapter = new BluetoothLinearItemAdapter(this, connectedHelper);
-        BluetoothDeviceDTO connectedDTO = new BluetoothDeviceDTO("蓝牙未连接", "");
-        connectedItemAdapter.addBluetooth(connectedDTO);
+        BluetoothDeviceDTO bluetoothDeviceDTO = new BluetoothDeviceDTO("蓝牙未连接", "");
+        connectedItemAdapter.addBluetooth(bluetoothDeviceDTO);
         connectedItemAdapter.addOnClickListener(connectedClickListener);
         connectedRecyclerView.setAdapter(connectedItemAdapter);
 
@@ -264,7 +278,7 @@ public class BluetoothConnectActivity extends BaseActivity {
     }
 
     private void initPairedClickListener() {
-        connectedClickListener = view -> {
+        connectedClickListener = (view, postion) -> {
             // 连接状态
             if (view instanceof QMUICommonListItemView) {
                 QMUICommonListItemView qmuiView = (QMUICommonListItemView) view;
@@ -275,26 +289,40 @@ public class BluetoothConnectActivity extends BaseActivity {
         };
     }
 
+    @SuppressLint("CheckResult")
     private void initSearchedClickListener() {
-        searchedClickListener = view -> {
+        searchedClickListener = (view, postion) -> {
             // 连接状态
             if (view instanceof QMUICommonListItemView) {
                 QMUICommonListItemView qmuiView = (QMUICommonListItemView) view;
                 CharSequence address = qmuiView.getDetailText();
 
-                // 蓝牙连接
-                checkBluetoothState(address.toString());
-                connectBluetooth(address.toString(), btConnectStatusListener);
+                // 设置Item样式
+                qmuiView.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CUSTOM);
+                qmuiView.addAccessoryCustomView(new QMUILoadingView(this));
+
+                Observable.fromCallable(() -> {
+                            btConnectStatusListener.setPostion(postion);
+                            connectBluetooth(address.toString(), btConnectStatusListener);
+                            return "订阅";
+                        }
+                ).compose(this.bindToLifecycle())
+                        .subscribeOn(Schedulers.single())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(s -> {
+                            qmuiView.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_NONE);
+                            qmuiView.addAccessoryCustomView(new QMUILoadingView(this));
+                        });
             }
         };
     }
 
-    private void checkBluetoothState(String mac) {
+    /*private void checkBluetoothState(String mac) {
         int bondState = bluetoothClient.getBondState(mac);
         Log.i(TAG, "绑定状态：" + bondState);
         int connectStatus = bluetoothClient.getConnectStatus(mac);
         Log.i(TAG, "连接状态：" + connectStatus);
-    }
+    }*/
 
     private void connectBluetooth(String mac, BTConnectStatusListener btConnectStatusListener) {
         classicBluetoothClient = BluetoothClientFactory.getClassicBluetoothClient(mac, btConnectStatusListener);
@@ -304,14 +332,17 @@ public class BluetoothConnectActivity extends BaseActivity {
     private void initBleConnectStatusListener() {
         btConnectStatusListener = new BTConnectStatusListener() {
             @Override
-            public void onConnectStatusChanged(BluetoothDevice bluetoothDevice, int status) {
+            public void onConnectStatusChanged(BluetoothDevice bluetoothDevice, int status, int postion) {
                 Log.i(TAG, "蓝牙连接监听：" + bluetoothDevice.getName() + " " + bluetoothDevice.getAddress() + " " + status);
                 switch (status) {
                     case Constants.STATUS_DEVICE_CONNECTED:
                         ToastUtils.show("蓝牙连接成功");
-                        searchedItemAdapter.deleteBluetooth(bluetoothDevice.getAddress());
+                        searchedItemAdapter.deleteBluetooth(postion);
                         connectedItemAdapter.initBluetoothes();
                         connectedItemAdapter.addBluetooth(new BluetoothDeviceDTO(bluetoothDevice.getName(), bluetoothDevice.getAddress()));
+                        break;
+                    case Constants.STATUS_DEVICE_DISCONNECTED:
+                        ToastUtils.show("蓝牙连接失败");
                         break;
                     default:
                         break;
@@ -319,4 +350,34 @@ public class BluetoothConnectActivity extends BaseActivity {
             }
         };
     }
+
+    private void registerBoradcastReceiver() {
+        //注册监听
+        IntentFilter stateChangeFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        IntentFilter connectedFilter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+        IntentFilter disConnectedFilter = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        registerReceiver(stateChangeReceiver, stateChangeFilter);
+        registerReceiver(stateChangeReceiver, connectedFilter);
+        registerReceiver(stateChangeReceiver, disConnectedFilter);
+    }
+
+    private void unRegisterBoradcastReceiver() {
+        unregisterReceiver(stateChangeReceiver);
+    }
+
+    private BroadcastReceiver stateChangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+                //连接上了
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                Log.i(TAG, "设备已连接：" + device.getName() + " " + device.getAddress());
+            } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
+                //蓝牙连接被切断
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                Log.i(TAG, "设备已连接已断开：" + device.getName() + " " + device.getAddress());
+            }
+        }
+    };
 }
