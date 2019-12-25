@@ -153,10 +153,13 @@ dependencies {
     annotationProcessor "com.qmuiteam:arch-compiler:$qmui_arch_version"
 
     implementation files('libs/gprintersdkv1.jar')
-
+    // 低功耗蓝牙连接库
     implementation 'com.inuker.bluetooth:library:1.4.0'
 
+    // alibaba vlayout
     implementation('com.alibaba.android:vlayout:1.2.8@aar') {
         transitive = true
     }
+    // 二维码扫描
+    implementation 'com.github.xuexiangjys:XQRCode:1.0.6'
 }

@@ -189,4 +189,5 @@
 
     <string name="section_header_connected">已连接设备</string>
     <string name="section_header_searched">已搜索设备</string>
+    <string name="sweep_code">扫码</string>
 </resources>

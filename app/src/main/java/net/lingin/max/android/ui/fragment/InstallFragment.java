@@ -56,13 +56,6 @@ public class InstallFragment extends BaseFragment {
 
     private void initTopBar() {
         mTopBar.setTitle("设置");
-
-        mTopBar.addRightImageButton(R.mipmap.icon_topbar_about, R.id.topbar_right_about_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
     }
 
 }
