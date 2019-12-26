@@ -11,6 +11,7 @@ import com.king.zxing.CaptureActivity;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
 
 import net.lingin.max.android.R;
+import net.lingin.max.android.ui.activity.QRCodeActivity;
 import net.lingin.max.android.ui.base.BaseFragment;
 
 import butterknife.BindView;
@@ -55,7 +56,7 @@ public class BillFragment extends BaseFragment {
         }, getResources().getColor(R.color.colorPrimary), "二维码扫描");*/
 
         //跳转的默认扫码界面
-        startActivityForResult(new Intent(getActivity(), CaptureActivity.class), REQUEST_CODE);
+        startActivityForResult(new Intent(getActivity(), QRCodeActivity.class), REQUEST_CODE);
     }
 
     @Override
