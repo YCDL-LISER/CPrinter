@@ -6,14 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
+import com.king.zxing.CaptureActivity;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
-import com.xuexiang.xqrcode.XQRCode;
 
 import net.lingin.max.android.R;
 import net.lingin.max.android.ui.base.BaseFragment;
-import net.lingin.max.android.utils.ToastUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -48,7 +46,16 @@ public class BillFragment extends BaseFragment {
 
     @OnClick(R.id.sweepCode)
     public void onClick(View view) {
-        XQRCode.startScan(this, REQUEST_CODE);
+//        XQRCode.startScan(this, REQUEST_CODE);
+        /*WeChatCaptureActivity.init(getActivity(), new ResultListener() {
+            @Override
+            public void onResult(String s) {
+                //处理返回的结果s;
+            }
+        }, getResources().getColor(R.color.colorPrimary), "二维码扫描");*/
+
+        //跳转的默认扫码界面
+        startActivityForResult(new Intent(getActivity(), CaptureActivity.class), REQUEST_CODE);
     }
 
     @Override
@@ -60,12 +67,12 @@ public class BillFragment extends BaseFragment {
                 if (bundle == null) {
                     return;
                 }
-                if (bundle.getInt(XQRCode.RESULT_TYPE) == XQRCode.RESULT_SUCCESS) {
+                /*if (bundle.getInt(XQRCode.RESULT_TYPE) == XQRCode.RESULT_SUCCESS) {
                     String result = bundle.getString(XQRCode.RESULT_DATA);
                     ToastUtils.show("解析结果:" + result, Toast.LENGTH_LONG);
                 } else if (bundle.getInt(XQRCode.RESULT_TYPE) == XQRCode.RESULT_FAILED) {
                     ToastUtils.show("解析二维码失败", Toast.LENGTH_LONG);
-                }
+                }*/
             }
         }
     }

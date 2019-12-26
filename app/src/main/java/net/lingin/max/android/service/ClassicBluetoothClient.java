@@ -19,15 +19,11 @@ import java.util.Vector;
  */
 public class ClassicBluetoothClient {
 
-    private static final String TAG = ClassicBluetoothClient.class.getName();
-
     public UUID SOCKET_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
-    private static final String NAME = "ClassicBluetoothSocket";
+    private static final String TAG = ClassicBluetoothClient.class.getName();
 
     private BluetoothDevice bluetoothDevice;
-
-    private BTConnectStatusListener btConnectStatusListener;
 
     private BluetoothSocket mSocket;
 
@@ -35,13 +31,7 @@ public class ClassicBluetoothClient {
 
     private OutputStream outputStream;
 
-    public ClassicBluetoothClient(BluetoothDevice bluetoothDevice, BTConnectStatusListener btConnectStatusListener) {
-        this.bluetoothDevice = bluetoothDevice;
-        this.btConnectStatusListener = btConnectStatusListener;
-    }
-
     private void initSocketStream() throws IOException {
-        this.mSocket.isConnected();
         this.inputStream = this.mSocket.getInputStream();
         this.outputStream = this.mSocket.getOutputStream();
     }
@@ -53,20 +43,24 @@ public class ClassicBluetoothClient {
         return this.mSocket.isConnected();
     }
 
-    public void connect() {
-//        SOCKET_UUID = UUID.randomUUID();
+    public void connect(BluetoothDevice bluetoothDevice, BTConnectStatusListener btConnectStatusListener) {
         try {
             mSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(SOCKET_UUID);
-            if (mSocket.isConnected()) {
-                return;
-            }
             mSocket.connect();
             initSocketStream();
             btConnectStatusListener.invokeSync(bluetoothDevice, Constants.STATUS_DEVICE_CONNECTED);
+            this.bluetoothDevice = bluetoothDevice;
         } catch (IOException e) {
-            Log.e(TAG, "连接异常: ", e);
+            Log.e(TAG, "蓝牙连接异常: ", e);
             btConnectStatusListener.invokeSync(bluetoothDevice, Constants.STATUS_DEVICE_DISCONNECTED);
         }
+    }
+
+    public BluetoothDevice getConnectedBluetoothDevice() {
+        if (isConnected()) {
+            return bluetoothDevice;
+        }
+        return null;
     }
 
     public void writeData(byte[] data) {

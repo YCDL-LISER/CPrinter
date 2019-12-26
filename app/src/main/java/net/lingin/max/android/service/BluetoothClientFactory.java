@@ -5,13 +5,14 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothHeadset;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.inuker.bluetooth.library.BluetoothClient;
-import com.inuker.bluetooth.library.utils.BluetoothUtils;
 
 import net.lingin.max.android.logger.Log;
 import net.lingin.max.android.model.BluetoothDeviceDTO;
-import net.lingin.max.android.ui.listener.BTConnectStatusListener;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -28,6 +29,56 @@ public class BluetoothClientFactory {
     private static ClassicBluetoothClient classicBluetoothClient;
 
     private static BluetoothHeadset bluetoothHeadset;
+
+    private static BluetoothAdapter mBluetoothAdapter;
+
+    public static BluetoothClient getBluetoothClient(Context context) {
+        if (bluetoothClient == null) {
+            bluetoothClient = new BluetoothClient(context);
+        }
+        return bluetoothClient;
+    }
+
+    @Nullable
+    public static BluetoothDevice getRemoteDevice(String mac) {
+        if (!TextUtils.isEmpty(mac)) {
+            BluetoothAdapter adapter = getBluetoothAdapter();
+            if (adapter != null) {
+                return adapter.getRemoteDevice(mac);
+            }
+        }
+        return null;
+    }
+
+    public static ClassicBluetoothClient getClassicBluetoothClient() {
+        if (classicBluetoothClient == null) {
+            classicBluetoothClient = new ClassicBluetoothClient();
+        }
+        return classicBluetoothClient;
+    }
+
+    public static BluetoothAdapter getBluetoothAdapter() {
+        if (mBluetoothAdapter == null) {
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        }
+        return mBluetoothAdapter;
+    }
+
+    public static BluetoothDeviceDTO getConnectedBlt(Context context) {
+        BluetoothDeviceDTO bluetoothDeviceDTO = new BluetoothDeviceDTO("蓝牙未连接", "");
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        mBluetoothAdapter.getProfileProxy(context, mProfileListener, BluetoothProfile.HEADSET);
+        if (bluetoothHeadset == null) {
+            return bluetoothDeviceDTO;
+        }
+        List<BluetoothDevice> devices = bluetoothHeadset.getConnectedDevices();
+        for (final BluetoothDevice dev : devices) {
+            if (bluetoothHeadset.isAudioConnected(dev)) {
+                bluetoothDeviceDTO = new BluetoothDeviceDTO(dev.getName(), dev.getAddress());
+            }
+        }
+        return bluetoothDeviceDTO;
+    }
 
     private static BluetoothProfile.ServiceListener mProfileListener = new BluetoothProfile.ServiceListener() {
 
@@ -50,34 +101,4 @@ public class BluetoothClientFactory {
             }
         }
     };
-
-    public static BluetoothClient getBluetoothClient(Context context) {
-        if (bluetoothClient == null) {
-            bluetoothClient = new BluetoothClient(context);
-        }
-        return bluetoothClient;
-    }
-
-    public static ClassicBluetoothClient getClassicBluetoothClient(String mac, BTConnectStatusListener btConnectStatusListener) {
-        if (classicBluetoothClient == null) {
-            classicBluetoothClient = new ClassicBluetoothClient(BluetoothUtils.getRemoteDevice(mac), btConnectStatusListener);
-        }
-        return classicBluetoothClient;
-    }
-
-    public static BluetoothDeviceDTO getConnectedBlt(Context context) {
-        BluetoothDeviceDTO bluetoothDeviceDTO = new BluetoothDeviceDTO("蓝牙未连接", "");
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter.getProfileProxy(context, mProfileListener, BluetoothProfile.HEADSET);
-        if (bluetoothHeadset == null) {
-            return bluetoothDeviceDTO;
-        }
-        List<BluetoothDevice> devices = bluetoothHeadset.getConnectedDevices();
-        for (final BluetoothDevice dev : devices) {
-            if (bluetoothHeadset.isAudioConnected(dev)) {
-                bluetoothDeviceDTO = new BluetoothDeviceDTO(dev.getName(), dev.getAddress());
-            }
-        }
-        return bluetoothDeviceDTO;
-    }
 }

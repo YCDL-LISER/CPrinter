@@ -75,6 +75,11 @@ public class BluetoothLinearItemAdapter extends DelegateAdapter.Adapter<Bluetoot
         notifyDataSetChanged();
     }
 
+    public void addBluetooth(List<BluetoothDeviceDTO> bluetoothDeviceDTOS) {
+        data.addAll(bluetoothDeviceDTOS);
+        notifyDataSetChanged();
+    }
+
     public void deleteBluetooth(int postion) {
         data.remove(postion);
         notifyDataSetChanged();
