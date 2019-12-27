@@ -7,11 +7,11 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.List;
 
-public class ContentContainerFragmentPagerAdapter extends FragmentPagerAdapter {
+public class TabsFragmentPagerAdapter extends FragmentPagerAdapter {
 
     private List<Fragment> fragments;
 
-    public ContentContainerFragmentPagerAdapter(@NonNull FragmentManager fm, List<Fragment> fragments) {
+    public TabsFragmentPagerAdapter(@NonNull FragmentManager fm, List<Fragment> fragments) {
         super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.fragments = fragments;
     }

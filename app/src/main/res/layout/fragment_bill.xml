@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -12,18 +13,55 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_goods"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </ScrollView>
 
-    <Button
-        android:id="@+id/sweepCode"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_marginBottom="@dimen/size_12"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="@string/sweep_code" />
+        android:layout_height="50dp"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/underline"
+        android:orientation="horizontal">
+
+        <com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton
+            android:id="@+id/sweepCode"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="16dp"
+            android:paddingTop="10dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="10dp"
+            android:text="@string/sweep_code"
+            app:qmui_radius="50dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="合计：888"
+            android:textColor="#F63A19" />
+
+        <com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton
+            android:id="@+id/goodsPrint"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="16dp"
+            android:paddingTop="10dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="10dp"
+            android:text="打印"
+            app:qmui_radius="50dp" />
+    </LinearLayout>
 </LinearLayout>

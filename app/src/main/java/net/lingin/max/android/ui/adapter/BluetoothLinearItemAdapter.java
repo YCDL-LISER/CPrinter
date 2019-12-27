@@ -9,8 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.LayoutHelper;
-import com.qmuiteam.qmui.util.QMUIResHelper;
-import com.qmuiteam.qmui.widget.QMUILoadingView;
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 
 import net.lingin.max.android.R;
@@ -48,7 +46,7 @@ public class BluetoothLinearItemAdapter extends DelegateAdapter.Adapter<Bluetoot
     @NotNull
     @Override
     public RecyclerViewItemHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.linear_item_bluetooth, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.adapter_bluetooth_list_item, parent, false);
         return new RecyclerViewItemHolder(view);
     }
 

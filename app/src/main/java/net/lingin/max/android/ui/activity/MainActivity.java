@@ -11,7 +11,7 @@ import com.qmuiteam.qmui.widget.tab.QMUITabBuilder;
 import com.qmuiteam.qmui.widget.tab.QMUITabSegment;
 
 import net.lingin.max.android.R;
-import net.lingin.max.android.ui.adapter.ContentContainerFragmentPagerAdapter;
+import net.lingin.max.android.ui.adapter.TabsFragmentPagerAdapter;
 import net.lingin.max.android.ui.base.BaseActivity;
 import net.lingin.max.android.ui.fragment.BillFragment;
 import net.lingin.max.android.ui.fragment.InstallFragment;
@@ -21,26 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
-
-/*bottomBar.setOnTabSelectListener(tabId -> {
-            switch (tabId) {
-                case R.id.tab_home:
-                    contentContainer.setCurrentItem(0);
-                    break;
-                case R.id.tab_bill:
-                    contentContainer.setCurrentItem(1);
-                    break;
-                case R.id.tab_install:
-                    contentContainer.setCurrentItem(2);
-                    break;
-                case R.id.tab_me:
-                    contentContainer.setCurrentItem(3);
-                    break;
-                default:
-                    break;
-            }
-            Log.i("选中项：" + tabId);
-        });*/
 
 public class MainActivity extends BaseActivity {
 
@@ -81,7 +61,7 @@ public class MainActivity extends BaseActivity {
         QMUITab component = builder
                 .setNormalDrawable(ContextCompat.getDrawable(this, R.mipmap.icon_tabbar_component))
                 .setSelectedDrawable(ContextCompat.getDrawable(this, R.mipmap.icon_tabbar_component_selected))
-                .setText("打印")
+                .setText("票据")
                 .build(this);
         QMUITab util = builder
                 .setNormalDrawable(ContextCompat.getDrawable(this, R.mipmap.icon_tabbar_util))
@@ -93,8 +73,8 @@ public class MainActivity extends BaseActivity {
                 .setSelectedDrawable(ContextCompat.getDrawable(this, R.mipmap.icon_tabbar_lab_selected))
                 .setText("我的")
                 .build(this);
-
-        mTabSegment.addTab(component)
+        mTabSegment
+                .addTab(component)
                 .addTab(util)
                 .addTab(lab);
     }
@@ -124,7 +104,7 @@ public class MainActivity extends BaseActivity {
         });
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        ContentContainerFragmentPagerAdapter pagerAdapter = new ContentContainerFragmentPagerAdapter(fragmentManager, fragments);
+        TabsFragmentPagerAdapter pagerAdapter = new TabsFragmentPagerAdapter(fragmentManager, fragments);
         contentContainer.setAdapter(pagerAdapter);
         mTabSegment.setupWithViewPager(contentContainer, false);
     }
