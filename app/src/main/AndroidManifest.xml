@@ -28,11 +28,6 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
         tools:targetApi="n">
 
-        <activity
-            android:name=".ui.activity.QRCodeActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/CaptureTheme" />
-
         <meta-data
             android:name="android.notch_support"
             android:value="true" />
@@ -86,6 +81,13 @@
             android:name=".ui.activity.BluetoothConnectActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|uiMode"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
+        <activity
+            android:name=".ui.activity.QRCodeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|uiMode"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:screenOrientation="portrait"
+            android:theme="@style/CaptureTheme"/>
     </application>
 
 </manifest>

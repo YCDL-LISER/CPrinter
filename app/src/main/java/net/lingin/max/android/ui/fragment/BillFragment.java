@@ -6,13 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
-import com.king.zxing.CaptureActivity;
+import com.king.zxing.Intents;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
 
 import net.lingin.max.android.R;
 import net.lingin.max.android.ui.activity.QRCodeActivity;
 import net.lingin.max.android.ui.base.BaseFragment;
+import net.lingin.max.android.utils.ToastUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -46,15 +48,7 @@ public class BillFragment extends BaseFragment {
     }
 
     @OnClick(R.id.sweepCode)
-    public void onClick(View view) {
-//        XQRCode.startScan(this, REQUEST_CODE);
-        /*WeChatCaptureActivity.init(getActivity(), new ResultListener() {
-            @Override
-            public void onResult(String s) {
-                //处理返回的结果s;
-            }
-        }, getResources().getColor(R.color.colorPrimary), "二维码扫描");*/
-
+    public void onSweepCodeClick(View view) {
         //跳转的默认扫码界面
         startActivityForResult(new Intent(getActivity(), QRCodeActivity.class), REQUEST_CODE);
     }
@@ -62,18 +56,14 @@ public class BillFragment extends BaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (REQUEST_CODE == requestCode && Activity.RESULT_OK == resultCode) {
             if (data != null) {
                 Bundle bundle = data.getExtras();
                 if (bundle == null) {
                     return;
                 }
-                /*if (bundle.getInt(XQRCode.RESULT_TYPE) == XQRCode.RESULT_SUCCESS) {
-                    String result = bundle.getString(XQRCode.RESULT_DATA);
-                    ToastUtils.show("解析结果:" + result, Toast.LENGTH_LONG);
-                } else if (bundle.getInt(XQRCode.RESULT_TYPE) == XQRCode.RESULT_FAILED) {
-                    ToastUtils.show("解析二维码失败", Toast.LENGTH_LONG);
-                }*/
+                String result = bundle.getString(Intents.Scan.RESULT);
+                ToastUtils.show("解析结果:" + result, Toast.LENGTH_LONG);
             }
         }
     }

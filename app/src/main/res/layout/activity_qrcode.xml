@@ -1,5 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:viewfinderview="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,11 +12,11 @@
         android:id="@+id/viewfinderView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        viewfinderview:labelText="@string/sweep_code_tips"
-        viewfinderview:labelTextColor="@color/text_light"
-        viewfinderview:labelTextPadding="@dimen/size_10"
-        viewfinderview:labelTextLocation="bottom"
-        viewfinderview:labelTextSize="@dimen/text_12" />
+        app:labelText="@string/sweep_code_tips"
+        app:labelTextColor="@color/text_light"
+        app:labelTextLocation="bottom"
+        app:labelTextPadding="@dimen/size_10"
+        app:labelTextSize="@dimen/text_12" />
 
     <ImageView
         android:id="@+id/ivTorch"
@@ -25,4 +25,30 @@
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/sweep_code_torch_height"
         android:src="@drawable/zxl_torch_selector" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginTop="28dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:srcCompat="@drawable/qmui_icon_topbar_back" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="@string/sweep_code_title"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_14" />
+    </FrameLayout>
 </FrameLayout>

@@ -1,7 +1,10 @@
 package net.lingin.max.android.ui.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.king.zxing.CaptureHelper;
@@ -10,8 +13,10 @@ import com.king.zxing.ViewfinderView;
 import net.lingin.max.android.R;
 import net.lingin.max.android.logger.Log;
 import net.lingin.max.android.ui.base.BaseActivity;
+import net.lingin.max.android.utils.ToastUtils;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class QRCodeActivity extends BaseActivity {
 
@@ -52,6 +57,12 @@ public class QRCodeActivity extends BaseActivity {
     @Override
     protected void onData() {
 
+    }
+
+    @OnClick(R.id.iv_back)
+    public void onBackClick(View view) {
+        finish();
+        overridePendingTransition(R.anim.slide_still, R.anim.slide_out_right);
     }
 
     @Override

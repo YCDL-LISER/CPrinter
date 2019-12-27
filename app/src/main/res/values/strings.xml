@@ -190,5 +190,7 @@
     <string name="section_header_connected">已连接设备</string>
     <string name="section_header_searched">已搜索设备</string>
     <string name="sweep_code">扫码</string>
+    <string name="sweep_code_title">二维码/条码</string>
+    <string name="sweep_code_right_text">相册</string>
     <string name="sweep_code_tips">将二维码/条码放入框内，即可自动扫描</string>
 </resources>
