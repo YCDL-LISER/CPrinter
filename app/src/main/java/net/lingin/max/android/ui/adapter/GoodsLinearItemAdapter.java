@@ -13,7 +13,7 @@ import com.alibaba.android.vlayout.LayoutHelper;
 import com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton;
 
 import net.lingin.max.android.R;
-import net.lingin.max.android.model.GoodsPrintDTO;
+import net.lingin.max.android.net.model.GoodsPrintResult;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +30,7 @@ public class GoodsLinearItemAdapter extends DelegateAdapter.Adapter<GoodsLinearI
 
     private LayoutHelper mHelper;
 
-    private List<GoodsPrintDTO> data = new ArrayList<>();
+    private List<GoodsPrintResult> data = new ArrayList<>();
 
     public GoodsLinearItemAdapter(Context context, LayoutHelper helper) {
         this.context = context;
@@ -51,7 +51,7 @@ public class GoodsLinearItemAdapter extends DelegateAdapter.Adapter<GoodsLinearI
 
     @Override
     public void onBindViewHolder(@NotNull RecyclerViewItemHolder holder, final int position) {
-        GoodsPrintDTO printDTO = data.get(position);
+        GoodsPrintResult printDTO = data.get(position);
         holder.itemNoTV.setText(printDTO.getItemNo());
         holder.itemNameTV.setText(printDTO.getItemName());
         holder.itemSizeTV.setText(printDTO.getItemSize());
@@ -81,11 +81,16 @@ public class GoodsLinearItemAdapter extends DelegateAdapter.Adapter<GoodsLinearI
         return data.size();
     }
 
-    public List<GoodsPrintDTO> getData() {
+    public List<GoodsPrintResult> getData() {
         return data;
     }
 
-    public void setData(List<GoodsPrintDTO> data) {
+    public void addData(GoodsPrintResult result) {
+        this.data.add(result);
+        notifyDataSetChanged();
+    }
+
+    public void setData(List<GoodsPrintResult> data) {
         this.data = data;
         notifyDataSetChanged();
     }

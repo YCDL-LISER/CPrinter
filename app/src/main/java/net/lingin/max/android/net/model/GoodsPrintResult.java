@@ -1,4 +1,4 @@
-package net.lingin.max.android.model;
+package net.lingin.max.android.net.model;
 
 import java.io.Serializable;
 
@@ -6,7 +6,7 @@ import java.io.Serializable;
  * @author Administrator
  * @date 2019/12/26 15:27
  */
-public class GoodsPrintDTO implements Serializable {
+public class GoodsPrintResult implements Serializable {
 
     private String itemName;
 
@@ -66,5 +66,17 @@ public class GoodsPrintDTO implements Serializable {
 
     public void setGoodsCounts(int goodsCounts) {
         this.goodsCounts = goodsCounts;
+    }
+
+    @Override
+    public String toString() {
+        return "GoodsPrintResult{" +
+                "itemName='" + itemName + '\'' +
+                ", itemNo='" + itemNo + '\'' +
+                ", unitNo='" + unitNo + '\'' +
+                ", salePrice=" + salePrice +
+                ", itemSize='" + itemSize + '\'' +
+                ", goodsCounts=" + goodsCounts +
+                '}';
     }
 }

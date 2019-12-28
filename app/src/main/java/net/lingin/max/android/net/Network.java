@@ -35,10 +35,11 @@ public class Network {
      */
     private static OkHttpClient initHttpClient() {
         return new OkHttpClient.Builder()
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC))
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .connectTimeout(ApiService.TIME_OUT, TimeUnit.SECONDS)
                 .readTimeout(ApiService.TIME_OUT, TimeUnit.SECONDS)
-                .writeTimeout(ApiService.TIME_OUT, TimeUnit.SECONDS).build();
+                .writeTimeout(ApiService.TIME_OUT, TimeUnit.SECONDS)
+                .build();
     }
 
     /**

@@ -12,7 +12,7 @@ import com.alibaba.android.vlayout.LayoutHelper;
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 
 import net.lingin.max.android.R;
-import net.lingin.max.android.model.BluetoothDeviceDTO;
+import net.lingin.max.android.ui.model.BluetoothDeviceDTO;
 
 import org.jetbrains.annotations.NotNull;
 

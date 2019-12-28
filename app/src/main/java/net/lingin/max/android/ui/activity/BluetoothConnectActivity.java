@@ -28,7 +28,7 @@ import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListSectionHeaderFooterView;
 
 import net.lingin.max.android.R;
-import net.lingin.max.android.model.BluetoothDeviceDTO;
+import net.lingin.max.android.ui.model.BluetoothDeviceDTO;
 import net.lingin.max.android.service.BluetoothClientFactory;
 import net.lingin.max.android.service.ClassicBluetoothClient;
 import net.lingin.max.android.ui.adapter.BluetoothLinearItemAdapter;
@@ -355,34 +355,4 @@ public class BluetoothConnectActivity extends BaseActivity {
             }
         };
     }
-
-/*    private void registerBoradcastReceiver() {
-        //注册监听
-        IntentFilter stateChangeFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        IntentFilter connectedFilter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
-        IntentFilter disConnectedFilter = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        registerReceiver(stateChangeReceiver, stateChangeFilter);
-        registerReceiver(stateChangeReceiver, connectedFilter);
-        registerReceiver(stateChangeReceiver, disConnectedFilter);
-    }
-
-    private void unRegisterBoradcastReceiver() {
-        unregisterReceiver(stateChangeReceiver);
-    }
-
-    private BroadcastReceiver stateChangeReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-                //连接上了
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                Log.i(TAG, "设备已连接：" + device.getName() + " " + device.getAddress());
-            } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
-                //蓝牙连接被切断
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                Log.i(TAG, "设备已连接已断开：" + device.getName() + " " + device.getAddress());
-            }
-        }
-    };*/
 }

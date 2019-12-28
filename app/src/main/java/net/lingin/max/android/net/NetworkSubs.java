@@ -3,7 +3,7 @@ package net.lingin.max.android.net;
 import com.google.gson.JsonParseException;
 
 import net.lingin.max.android.R;
-import net.lingin.max.android.net.entity.result.Result;
+import net.lingin.max.android.net.model.Result;
 import net.lingin.max.android.utils.ToastUtils;
 
 import org.json.JSONException;
@@ -20,19 +20,18 @@ import retrofit2.HttpException;
 /**
  * Created by: var_rain.
  * Created date: 2018/10/21.
- * Description: 观察着对象封装
+ * Description: 观察者对象封装
  */
-public abstract class Subs<T> implements Observer<Result<T>> {
+public abstract class NetworkSubs<T> implements Observer<Result<T>> {
 
     @Override
     public void onSubscribe(Disposable d) {
-
+        onSubscribing();
     }
 
     @Override
     public void onNext(Result<T> data) {
-        onCompleted();
-        if (data.getCode() == 200) {
+        if (data.getCode() == 0) {
             onSuccess(data.getData());
         } else {
             ToastUtils.show(data.getMsg());
@@ -42,7 +41,6 @@ public abstract class Subs<T> implements Observer<Result<T>> {
 
     @Override
     public void onError(Throwable e) {
-        onCompleted();
         if (e instanceof HttpException) {
             ToastUtils.show(R.string.toast_error_http);
         } else if (e instanceof ConnectException || e instanceof UnknownHostException) {
@@ -59,11 +57,18 @@ public abstract class Subs<T> implements Observer<Result<T>> {
 
     @Override
     public void onComplete() {
+        onCompleted();
+    }
+
+    /**
+     * 当订阅进行的时候，显示加载框
+     */
+    protected void onSubscribing() {
 
     }
 
     /**
-     * 无论成功或失败都会调用此方法,用于处理加载动画和加载框等,需要时重写
+     * 当订阅完成以后，关闭加载框
      */
     protected void onCompleted() {
 

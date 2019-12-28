@@ -1,4 +1,4 @@
-package net.lingin.max.android.model;
+package net.lingin.max.android.ui.model;
 
 public class BluetoothDeviceDTO {
 

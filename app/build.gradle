@@ -64,7 +64,7 @@ android {
             /* APP名称 */
             resValue('string', 'app_name', 'MaxAndroidBeta')
             /* 配置服务器地址 */
-            buildConfigField "String", "SERVER_BASE", '"http://test.lingin.net:8080"'
+            buildConfigField "String", "SERVER_BASE", '"http://192.168.1.10:9099"'
         }
         /* 这还有个正式环境配置 */
         pre {

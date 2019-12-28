@@ -10,7 +10,7 @@ import android.text.TextUtils;
 import com.inuker.bluetooth.library.BluetoothClient;
 
 import net.lingin.max.android.logger.Log;
-import net.lingin.max.android.model.BluetoothDeviceDTO;
+import net.lingin.max.android.ui.model.BluetoothDeviceDTO;
 
 import org.jetbrains.annotations.Nullable;
 

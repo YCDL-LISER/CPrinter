@@ -1,4 +1,4 @@
-package net.lingin.max.android.net.entity.result;
+package net.lingin.max.android.net.model;
 
 /**
  * Created by: var_rain.
@@ -9,10 +9,10 @@ public class Result<T> {
 
     /* 返回状态码 */
     private int code;
+
     /* 提示信息 */
     private String msg;
-    /* Token */
-    private String token;
+
     /* 数据对象 */
     private T data;
 
@@ -30,14 +30,6 @@ public class Result<T> {
 
     public void setMsg(String msg) {
         this.msg = msg;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public T getData() {
